@@ -1,0 +1,11 @@
+*env/
+__pycache__/
+.code/
+.vscode/
+static_root/
+migrations/
+.env
+*.sh
+*.ps1
+*sqlite*
+secret_key.txt

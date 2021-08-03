@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block scripts %}
+<script src="{% static 'sales/home.js' %}" defer></script>
+{% endblock scripts %}
+
+{% block title %}
+    home
+{% endblock title %}
+
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <br>
+    {% if sales_df %}
+        <h2>Sales Df</h2>
+        {{ sales_df|safe }}
+        <br>
+        <h2>Positions Df</h2>
+        {{ positions_df|safe }}
+        <br>
+        <h2>Merge Df</h2>
+        {{ merged_df|safe }}
+        <br>
+        <h2>Grouped Df</h2>
+        {{ df|safe }}
+        <br>
+        <h2>Chart</h2>
+        <img src="data:image/png;base64, {{chart|safe}}">
+
+    {% else %}
+        <h3>no data</h3>
+    {% endif %}
+
+    <button class="btn btn-primary">add reports</button>
+{% endblock content %}
