@@ -28,9 +28,11 @@ except FileNotFoundError:
     from django.utils.crypto import get_random_string
 
     chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-
     f = open(BASE_DIR / 'assets/secret_key.txt', 'w')
     f.write(get_random_string(50, chars))
+
+except Exception as e:
+    print(e)
 
 else:
     SECRET_KEY = f.read().strip()

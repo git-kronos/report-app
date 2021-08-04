@@ -4,17 +4,20 @@ from .models import Sale
 from apps.sales.forms import SaleSearchForm
 from apps.sales.utils import get_customer_from_id, get_salesman_from_id, get_chart
 import pandas as pd
+from apps.reports.forms import ReportForm
 
 
 # Create your views here.
 def home_view(request):
     chart = df = sales_df = positions_df = merged_df = None
 
-    form = SaleSearchForm(request.POST or None)
+    search_form = SaleSearchForm(request.POST or None)
+    report_form = ReportForm()
     if request.method == 'POST':
         date_form = request.POST.get('date_from')
         date_to = request.POST.get('date_to')
         chart_type = request.POST.get('chart_type')
+        results_by = request.POST.get('results_by')
 
         sale_qs = Sale.objects.filter(
             created__date__lte=date_to, created__date__gte=date_form)
@@ -47,11 +50,9 @@ def home_view(request):
             positions_df = pd.DataFrame(positions_data)
             merged_df = pd.merge(sales_df, positions_df, on='sales_id')
 
-            df = merged_df.groupby('transaction_id', as_index=False)[
-                'price'].agg('sum')
+            df = merged_df.groupby('transaction_id', as_index=False)['price'].agg('sum')
 
-            chart = get_chart(
-                chart_type, df, labels=df['transaction_id'].values)
+            chart = get_chart(chart_type, df, labels=df['transaction_id'].values)
 
             sales_df = sales_df.to_html()
             positions_df = positions_df.to_html()
@@ -61,7 +62,8 @@ def home_view(request):
         else:
             print('no data')
     context = {
-        'form': form,
+        'search_form': search_form,
+        'report_form': report_form,
         'sales_df': sales_df,
         'positions_df': positions_df,
         'merged_df': merged_df,

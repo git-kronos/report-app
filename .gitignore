@@ -2,6 +2,7 @@
 __pycache__/
 .code/
 .vscode/
+.idea/
 static_root/
 migrations/
 .env

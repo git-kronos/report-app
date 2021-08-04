@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
+{% load crispy_forms_filters %}
 {% load static %}
 {% load crispy_forms_tags %}
 
 {% block scripts %}
-<script src="{% static 'sales/home.js' %}" defer></script>
+    <script src="{% static 'sales/home.js' %}" defer></script>
 {% endblock scripts %}
 
 {% block title %}
@@ -12,31 +13,56 @@
 
 
 {% block content %}
+    <!-- Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add report</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modal-body">
+                    <div id="alert-box"></div>
+                    <form id="report-form">
+                        {% csrf_token %}
+                        {{report_form|crispy}}
+                    <button type="submit" class="btn btn-info mt-2">save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <form action="" method="post">
         {% csrf_token %}
-        {{form|crispy}}
+        {{search_form|crispy}}
+        <br>
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
     <br>
     {% if sales_df %}
-        <h2>Sales Df</h2>
+        Sales Df
         {{ sales_df|safe }}
         <br>
-        <h2>Positions Df</h2>
+        Positions Df
         {{ positions_df|safe }}
         <br>
-        <h2>Merge Df</h2>
+        Merge Df
         {{ merged_df|safe }}
         <br>
-        <h2>Grouped Df</h2>
+        Grouped Df
         {{ df|safe }}
         <br>
-        <h2>Chart</h2>
-        <img src="data:image/png;base64, {{chart|safe}}">
+        Chart
+        <img src="data:image/png;base64, {{chart|safe}}" id='img' alt="#">
 
     {% else %}
         <h3>no data</h3>
     {% endif %}
 
-    <button class="btn btn-primary">add reports</button>
+    <button class="btn btn-primary" hidden
+            id='report-btn'
+            data-bs-toggle="modal"
+            data-bs-target="#reportModal">add reports</button>
 {% endblock content %}
